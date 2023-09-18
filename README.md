@@ -1,5 +1,5 @@
 ## General info
-This project is simple Lorem ipsum dolor generator.
+This repository contains some calculations of supervised (regression and classificaton) and un-supervised learning (apriori).
 	
 ## Technologies
 Project is created with:
