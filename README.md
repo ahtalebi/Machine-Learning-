@@ -1,6 +1,6 @@
 ## General info
-This repository contains some calculations of supervised (regression and classificaton) and un-supervised learning (apriori).
-	
+This repository contains some calculations of supervised (regression and classification) and unsupervised learning (apriori)
+
 ## Technologies
 Project is created with:
 * Lorem version: 12.3
