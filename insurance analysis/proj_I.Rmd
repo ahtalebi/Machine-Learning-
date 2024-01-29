@@ -1,0 +1,620 @@
+---
+title: "Workshop I 'Actuarial Science'"
+author: "Amir_TALEBI"
+date: "2023-12-10"
+output: html_document
+---
+
+```{r}
+library(tidyverse) 
+library(dplyr)
+library(ggplot2)
+
+```
+
+```{r}
+insurance <- read.csv("/home/amir/Documents/3rd_semester/workshop I/project/project_R/insurance.csv", header = TRUE)
+insurance
+```
+
+```{r}
+summary(insurance[c('age', 'bmi', 'children', 'charges')])
+```
+
+```{r}
+sapply(insurance, class)
+```
+
+```{r}
+# to check for the outliers
+
+for (i in 1:ncol(insurance)) {
+  if (is.numeric(insurance[, i])) {
+    boxplot(insurance[, i], outcol="Red", main=colnames(insurance)[i])
+  }
+}
+
+```
+
+```{r}
+# to check for null values per column
+
+colSums(is.na(insurance))
+```
+No null value. 
+
+```{r}
+
+sum(duplicated(insurance))
+
+```
+
+# so, there is one duplicated row in data frame. we remove it. 
+
+```{r}
+
+insurance <- unique(insurance)
+insurance
+```
+
+```{r}
+
+ggplot(insurance, aes(x = charges)) +
+  geom_histogram(binwidth = 1500, fill = 'lightgreen', color = 'black') +
+  labs(title='charges distribution', x = 'charges') +
+  theme_minimal()
+
+```
+# long tail and as a result we have  outliers here.
+
+```{r}
+
+hist(insurance$age, main='Age distribution', xlab='Age', col='lightblue', border='black', breaks=15  , prob=TRUE)
+lines(density(insurance$age), col = 'red')
+
+```
+# for the Age, that would be better if we had more data for the ages more than 50. Majority of records are from younger people. 
+
+```{r}
+
+insurance$sex <- as.factor(insurance$sex)
+
+ggplot(insurance, aes(x=sex, fill=sex, group=sex)) +
+  geom_bar() +
+  theme_minimal() +
+  scale_fill_manual(values=c('cyan', 'brown'))
+
+```
+
+```{r}
+
+hist(insurance$bmi, main='BMI distribution', xlab='BMI', col='lightgreen', border='black', breaks=15 , prob=TRUE)
+lines(density(insurance$bmi), col = 'red')
+
+```
+# BMI plot shows a gaussian distribution.
+
+```{r}
+
+ggplot(insurance, aes(x=children)) +
+  geom_bar(fill='lightblue', color='black') +
+  labs(title='Children counter', x='children') +
+  theme_minimal()
+
+```
+# Children distribution looks interesting. With 0 and 5 as minority and majority of children in a family in our dataset.
+
+
+```{r}
+
+insurance$region <- as.factor(insurance$region)
+
+ggplot(insurance, aes(x=region, fill=region)) +
+  geom_bar(alpha=2.7) +
+  labs(title='Region distribution') +
+  theme_minimal()
+
+
+```
+
+
+```{r}
+# group data by sex.
+
+grouped_insurance_df <- insurance %>%
+  group_by(sex)
+
+summary_statistics <- grouped_insurance_df %>%
+  summarise(
+    min_charges = min(charges),
+    max_charges = max(charges),
+    mean_charges = mean(charges),
+    count_charges = n(),
+    std_charges = sd(charges)
+  )
+
+print(summary_statistics)
+```
+
+```{r}
+
+summary_table <- insurance %>%
+  group_by(region) %>%
+  summarise(avg_charges = mean(charges)) %>%
+  ungroup() 
+
+# Plot 
+ggplot(insurance, aes(x = region, fill = sex)) +
+  geom_bar(position = "dodge", color = "black", stat = "count") +
+  labs(title = "Count-plot of region by sex") +
+  theme_minimal()
+
+```
+
+
+```{r}
+# to plot the distribution of charges for non-smokers and smokers.
+
+ggplot(insurance, aes(x = charges, fill = smoker)) +
+  geom_histogram(position = "identity", bins = 30, color = "black") +
+  labs(title = "Distribution of Charges for non-smokers and smokers") +
+  scale_fill_manual(values = c("lightgreen", "lightpink"), name = "Smoker", labels = c("Non-Smoker", "Smoker")) +
+  theme_minimal()
+
+```
+
+```{r}
+
+insurance %>%
+  group_by(region, smoker) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  ggplot(aes(x = region, y = count, fill = factor(smoker))) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  labs(title = "Smoker distribution among regions") +
+  theme_minimal()
+
+```
+
+```{r}
+
+insurance %>%
+  ggplot(aes(x = smoker, fill = sex)) +
+  geom_bar(position = "stack", color = "black") +
+  labs(title = "Count of smokers by sex") +
+  scale_fill_manual(values = c("yellow", "blue")) +
+  theme_minimal()
+
+```
+
+```{r}
+
+ggplot(insurance, aes(x = sex, y = charges, fill = smoker)) +
+  geom_violin(scale = "width", trim = FALSE) +
+  scale_fill_manual(values = c("#440154FF", "yellow")) + 
+  labs(title = "Charges by sex and smoker status",
+       x = "Sex" ,
+       y = "Charges") +
+  theme_minimal()
+
+```
+
+```{r}
+
+stripchart(insurance$charges ~ insurance$children, vertical = TRUE, method = "jitter",
+           pch = 16, col = "blue", main = "Strip plot: charges by number of children",
+           xlab = "Number of children", ylab = "Charges")
+
+```
+
+```{r}
+
+boxplot(insurance$charges ~ insurance$bmi, col = "lightblue",
+        main = "Charges by BMI stats", xlab = "BMI stats", ylab = "charges")
+
+```
+
+
+```{r}
+# number of smokers in the whole data?
+
+num_smokers <- sum(insurance$smoker == 'yes')
+
+total_sample_size <- nrow(insurance)
+
+cat("In total,", num_smokers, "out of", total_sample_size, "are smokers.")
+
+```
+
+# Let's list categorical and numerical columns using the dplyr package.
+
+```{r}
+
+# columns to factors
+insurance$sex <- factor(insurance$sex)
+insurance$smoker <- factor(insurance$smoker)
+insurance$region <- factor(insurance$region)
+
+# detect categorical columns
+categorical_columns <- insurance %>%
+  select_if(is.factor) %>%
+  names()
+
+# detect numerical columns
+numerical_columns <- insurance %>%
+  select_if(is.numeric) %>%
+  names()
+
+print(categorical_columns)
+print(numerical_columns)
+
+```
+
+```{r}
+#  correlation matrix
+
+library(corrplot)
+correlation_matrix <- cor(insurance[, numerical_columns])
+
+corrplot(correlation_matrix, method = "color", type = "lower", order = "hclust")
+
+```
+
+# To do modelling, we need to use label encoders for the categorical features. 
+
+```{r}
+insurance$sex <- as.numeric(factor(insurance$sex, levels = unique(insurance$sex)))
+insurance$smoker <- as.numeric(factor(insurance$smoker, levels = unique(insurance$smoker)))
+insurance$region <- as.numeric(factor(insurance$region, levels = unique(insurance$region)))
+
+age<-insurance$age
+sex<-insurance$sex
+bmi<-insurance$bmi
+children<-insurance$children
+smoker<-insurance$smoker
+region<-insurance$region
+charges<-insurance$charges
+
+insurance
+```
+
+
+# let's detect outliers based on their z-score (which measures how many standard deviations a data point is far from the mean). As we can see in the following code, the percentage of outliers in boht BMI and charges columns is less than 0.6%.  We cannot define a theory or distribution for them with this few amount. One way is to use trimming, otherwise the amount of RMSE would be huge. Note that, the given outlier list for both BMI and charges is for the data that are not in +3 * standard_deviation, both BMI and charges are positive quantities.  We could also use winsorizing which involves replacing the outliers with the nearest non-outlier values.
+
+```{r}
+
+detect_OUTliers <- function(x) {
+  z_scores <- (x - mean(x)) / sd(x)
+  outliers <- abs(z_scores) > 3  
+  return(outliers)
+}
+
+bmi_outliers <- detect_OUTliers(insurance$bmi)          # BMI data is normally distributed.
+charges_outliers <- detect_OUTliers(insurance$charges)  # charges is not normally distributed. 
+
+# outliers for 'BMI'
+cat("BMI outliers:\n", insurance$bmi[bmi_outliers], "\n")
+bmi_outlier_percentage <- sum(bmi_outliers) / length(bmi_outliers) * 100
+cat("BMI outlier percentage:", bmi_outlier_percentage, "%\n\n")
+
+# outliers for 'charges'
+cat("Charges outliers:\n", insurance$charges[charges_outliers], "\n")
+charges_outlier_percentage <- sum(charges_outliers) / length(charges_outliers) * 100
+cat("Charges outlier percentage:", charges_outlier_percentage, "%\n")
+
+```
+# we are using Trimming in the next part (we see that 11 rows will be removed):
+
+```{r}
+insurance_clean <- insurance[!bmi_outliers & !charges_outliers, ]
+cat("Dimensions of Cleaned Data:\n")
+print(dim(insurance_clean))
+
+```
+
+```{r}
+model1 <- lm(charges ~ age + sex + bmi + children + smoker + region, data = insurance_clean)
+summary(model1)
+
+```
+
+# based on the output for the linear regression model, the F-statistic is equal to 668.2 and p-value is very close to zero,  indicate that the model is statistically significant (it is not random effect) and at-least one predictor variable has a significant relationship with the response variable. So, we conclude that not all the coefficients are zero. Also, the coefficients for 'age', 'bmi', 'children', 'smoker', and 'region' are statistically significant (asterisks).
+
+
+```{r}
+
+predictions <- predict(model1, newdata = insurance_clean)
+residuals <- insurance_clean$charges - predictions # Calculate residuals
+
+rmse <- sqrt(mean(residuals^2))
+cat("RMSE:", rmse, "\n")
+
+```
+
+```{r}
+insurance_clean
+
+```
+
+```{r}
+# this part is for the supervise learning steps and set the X and y. 
+
+X <- insurance_clean[, c('age', 'sex', 'bmi', 'children', 'smoker', 'region')]
+y <- insurance_clean$charges
+
+print("X:")
+print(X)
+
+print("y:")
+print(y)
+
+
+```
+
+```{r}
+library(caret)
+set.seed(42)
+
+# split the data
+splitIndex <- createDataPartition(y, p = 0.8, list = FALSE)
+X_train <- X[splitIndex, ]
+X_test <- X[-splitIndex, ]
+y_train <- y[splitIndex]
+y_test <- y[-splitIndex]
+
+cat("Training set size:", nrow(X_train), "\n")
+cat("Testing set size:", nrow(X_test), "\n")
+cat("Training target variable size:", length(y_train), "\n")
+cat("Testing target variable size:", length(y_test), "\n")
+
+```
+
+# AdaBoost is primarily used for binary classification problems, and it's not directly applicable to regression problems where the target variable is continuous. We will be using random forest and XGBoost regression for the prediction.
+
+```{r}
+library(randomForest)
+
+# Random Forest model
+random_forest_model <- randomForest(y_train ~ ., data = cbind(X_train, y_train), ntree = 100)
+
+# predictions on the testset
+predictions <- predict(random_forest_model, newdata = cbind(X_test, y_test))
+
+
+rmse <- sqrt(mean((predictions - y_test)^2))
+print(paste("Root Mean Squared Error: ", rmse))
+
+```
+
+```{r}
+
+df <- data.frame(Actual = y_test, Predicted = predictions)
+
+plot <- ggplot(df, aes(x = Actual, y = Predicted)) +
+  geom_point(color = "blue", alpha = 0.7) +  
+  geom_smooth(method = "lm", se = FALSE, color = "red", linetype = "dashed") +  
+  labs(title = "Actual vs Predicted", x = "Actual Values", y = "Predicted Values") +
+  theme_minimal()  
+
+print(plot)
+
+```
+
+# in the next sectoin, we use XGBoost regression, 
+
+```{r}
+library(xgboost) # to be installed.
+
+# xgboost uses matrix data so that we need to convert our data into the xgb matrix type.
+dtrain <- xgb.DMatrix(data = as.matrix(X_train), label = y_train)
+dtest <- xgb.DMatrix(data = as.matrix(X_test), label = y_test)
+
+# hyperparameters for the XGBoost model
+params <- list(
+  objective = "reg:squarederror",  # for regression
+  eval_metric = "rmse",             # metric
+  max_depth = 3,                    # maximum depth of a tree
+  eta = 0.1,                        # rate
+  subsample = 0.8,                  # fraction of observations to randomly sample for each tree
+  colsample_bytree = 0.8            # fraction of features to randomly sample for each tree
+)
+
+xgb_model <- xgboost(data = dtrain, params = params, nrounds = 100, verbose = 1)  # Train the XGBoost model
+
+# predictions on the testset
+predictions_train <- predict(xgb_model, newdata = as.matrix(X_train))
+predictions_test <- predict(xgb_model, newdata = as.matrix(X_test))
+
+# model evaluation on training and test sets
+rmse_train <- sqrt(mean((predictions_train - y_train)^2))
+rmse_test <- sqrt(mean((predictions_test - y_test)^2))
+
+print(paste("Root Mean Squared Error (XGBoost) - Training Set:", rmse_train))
+print(paste("Root Mean Squared Error (XGBoost) - Test Set:", rmse_test))
+
+
+```
+
+```{r}
+
+results <- data.frame(Actual = y_test, Predicted = predictions_test)
+
+# Plot the original vs. predicted values
+ggplot(results, aes(x = Actual, y = Predicted)) +
+  geom_point(color = "darkgreen",  alpha = 0.7) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  theme_minimal() +
+  labs(title = "Actual vs. Predicted",
+       x = "Actual charges",
+       y = "Predicted charges")
+
+```
+
+
+# NN  and using scaled data
+
+
+```{r}
+
+
+numeric_columns <- sapply(insurance_clean, is.numeric)
+scaled_numeric <- scale(insurance_clean[, numeric_columns])
+scaled_insurance <- cbind(scaled_numeric, insurance_clean[!numeric_columns])
+
+scaled_insurance
+
+
+```
+
+
+```{r}
+scaled_insurance$sex <- as.numeric(factor(scaled_insurance$sex, levels = unique(scaled_insurance$sex)))
+scaled_insurance$smoker <- as.numeric(factor(scaled_insurance$smoker, levels = unique(scaled_insurance$smoker)))
+scaled_insurance$region <- as.numeric(factor(scaled_insurance$region, levels = unique(scaled_insurance$region)))
+
+age<-scaled_insurance$age
+sex<-scaled_insurance$sex
+bmi<-scaled_insurance$bmi
+children<-scaled_insurance$children
+smoker<-scaled_insurance$smoker
+region<-scaled_insurance$region
+charges<-scaled_insurance$charges
+
+scaled_insurance
+
+```
+
+```{r}
+
+# this part is for the supervise learning steps and set the X and y. 
+
+X <- scaled_insurance[, c('age', 'sex', 'bmi', 'children', 'smoker', 'region')]
+y <- scaled_insurance$charges
+
+print("X:")
+print(X)
+
+print("y:")
+print(y)
+
+```
+
+
+```{r}
+library(caret)
+set.seed(42)
+
+# split the data
+splitIndex <- createDataPartition(y, p = 0.8, list = FALSE)
+X_train <- X[splitIndex, ]
+X_test <- X[-splitIndex, ]
+y_train <- y[splitIndex]
+y_test <- y[-splitIndex]
+
+cat("Training set size:", nrow(X_train), "\n")
+cat("Testing set size:", nrow(X_test), "\n")
+cat("Training target variable size:", length(y_train), "\n")
+cat("Testing target variable size:", length(y_test), "\n")
+
+```
+
+
+
+```{r}
+library(keras)
+library(caret)
+
+```
+
+# I finally installed tensor_Felow
+
+```{r}
+library(tensorflow)
+
+# Convert data.frame to matrix (if needed)
+X_train <- as.matrix(X_train)
+
+
+# Define the neural network model with reduced neurons
+model <- keras_model_sequential()
+model %>%
+  layer_dense(units = 16, activation = 'relu', input_shape = ncol(X_train))
+model %>%
+  layer_dense(units = 8, activation = 'relu')
+model %>%
+  layer_dense(units = 4, activation = 'relu')
+model %>%
+  layer_dense(units = 1, activation = 'linear')
+
+
+```
+
+
+```{r}
+
+model %>% compile(
+  optimizer = 'adam',
+  loss = 'mse',          # Mse for regression
+  metrics = c('mae')     # Mean Absolute Error
+)
+
+```
+
+
+```{r}
+
+# data types 
+cat("Type of y_train:", class(y_train), "\n")
+cat("Type of X_train:", class(X_train), "\n")
+```
+
+```{r}
+
+# Train the model
+history <- model %>% fit(
+  x = X_train,
+  y = y_train,
+  epochs = 100,
+  batch_size = 32,
+  validation_split = 0.2
+)
+
+```
+
+```{r}
+# to get RMSE for the NN. 
+
+# predictions <- model %>% predict(X_test)
+#true_labels <- y_test
+
+#rmse <- sqrt(mean((predictions - true_labels)^2))
+#cat("Root Mean Squared Error (RMSE):", rmse, "\n")
+
+
+```
+
+
+```{r}
+
+train_loss <- history$metrics$loss
+val_loss <- history$metrics$val_loss
+epochs <- seq_along(train_loss)
+
+library(ggplot2)
+
+loss_plot <- ggplot() +
+  geom_line(aes(x = epochs, y = train_loss), color = "blue") +
+  labs(title = "Training Loss", x = "Epoch", y = "Loss")
+
+print(loss_plot)
+
+val_loss_plot <- ggplot() +
+  geom_line(aes(x = epochs, y = val_loss), color = "red") +
+  labs(title = "Validation Loss", x = "Epoch", y = "Loss")
+
+print(val_loss_plot)
+
+
+```
+
+
+ 
