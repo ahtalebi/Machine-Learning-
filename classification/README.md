@@ -9,9 +9,27 @@ If you use the dataset provided in this project, please cite the original source
 
 ## Table of Contents
 
+- [Classification Models](#classification-models)
 - [Features](#features)
 - [Installation](#installation)
 
+
+## Classification Models
+
+In this project, we have employed prominent classification models for the task of categorizing wines into distinct varieties based on their characteristics. The models used are Support Vector Machines (SVM) and Random Forest and TBA.
+
+### Support Vector Machines (SVM)
+
+In the context of this project, SVM has been utilized to classify wines into one of the three categories based on the provided features.
+
+- **Accuracy on Test Set:** 0.9629629629629629
+- **Precision on Test Set:** 0.9642857142857143
+
+### Random Forest
+
+In our project, Random Forest has been employed to predict the wine variety based on the specified features.
+
+- **Accuracy on Test Set:** 0.9629629629629629
 
 ## Features
 
