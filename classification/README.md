@@ -1,3 +1,9 @@
+![GitHub Logo](images/1.webp)
+
+
+
+
+
 # Wine type classification
 
 In this note, we train a classification model to analyze the chemical and visual features of wine samples and classify them based on their cultivar (grape variety).
