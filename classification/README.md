@@ -2,6 +2,11 @@
 
 In this note, we train a classification model to analyze the chemical and visual features of wine samples and classify them based on their cultivar (grape variety).
 
+## Citation
+
+If you use the dataset provided in this project, please cite the original source:
+**Citation**: https://archive.ics.uci.edu/dataset/109/wine
+
 ## Table of Contents
 
 - [Features](#features)
