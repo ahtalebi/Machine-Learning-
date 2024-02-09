@@ -14,3 +14,14 @@ The dataset used in this project is sourced from the following study:
 **Publication:** Applied Soft Computing, 65, 260-271 (2018)
 
 and can be found in the [UCI Machine Learning Repository](https://archive.ics.uci.edu/).
+
+## Description
+
+In our analysis, we explored two regression models: Linear Regression and Random Forest. However, both models yielded a Root Mean Square Error (RMSE) of more than 7. Random Forest showed a slightly lower RMSE, closer to 7, compared to Linear Regression.
+
+As a result, we decided to proceed with the Random Forest model for prediction. To improve its performance, we made the following adjustments:
+
+- Increasing the size of the training data to 80% instead of 70%.
+- Increasing the number of decision trees (n_estimators) to 80.
+
+It's worth noting that, to achieve an RMSE less than 7, we did not remove outliers from the dataset.

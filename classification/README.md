@@ -1,4 +1,4 @@
-![text](https://raw.githubusercontent.com/ahtalebi/Machine-Learning-/main/images/1.webp)
+![text](https://github.com/ahtalebi/Machine-Learning-/blob/c70740e6d045cf88f0f91ed0830f602c4559a4a5/images/cl1.png)
 
 
 # Wine type classification
