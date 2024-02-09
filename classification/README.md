@@ -1,7 +1,4 @@
-![GitHub Logo](images/1.webp)
-
-
-
+![text](https://raw.githubusercontent.com/ahtalebi/Machine-Learning-/main/images/1.webp)
 
 
 # Wine type classification
