@@ -18,7 +18,3 @@ The dataset used in this project consists of the following variables:
 | age       | Age of the individual                                                                               |
 | chd       | Presence or absence of Coronary Heart Disease (Si for "yes" and No for "no")                        |
 
-## Usage
-
-Instructions on how to use your project or any relevant information.
-
