@@ -17,7 +17,7 @@ and can be found in the [UCI Machine Learning Repository](https://archive.ics.uc
 
 ## Description
 
-In our analysis, we explored two regression models: Linear Regression and Random Forest. However, both models yielded a Root Mean Square Error (RMSE) of more than 7. Random Forest showed a slightly lower RMSE, closer to 7, compared to Linear Regression.
+In our analysis, we explored two regression models: Linear Regression, Random Forest and Neural Network. Random Forest showed a slightly lower RMSE, closer to 7, compared to Linear Regression.
 
 As a result, we decided to proceed with the Random Forest model for prediction. To improve its performance, we made the following adjustments:
 
