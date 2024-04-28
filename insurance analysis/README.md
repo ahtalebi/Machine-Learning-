@@ -1,7 +1,5 @@
-## General info
-This repository contains some calculations of supervised (regression and classification) and unsupervised  (apriori) learning.
+This repository features an in-depth analysis of medical insurance cost prediction. We've employed a range of data exploratory analysis methods to clean, impute, and prepare the data for modeling.
 
 ## About
 Each folder contains:
 * source code
-* data 
