@@ -1,10 +1,9 @@
 ![GitHub Logo](images/1.webp)
 
-
-## General info
-This repository contains some calculations of supervised (regression and classification) and unsupervised  (apriori) learning.
+## General Info
+This repository contains various supervised (regression and classification) and unsupervised (apriori) learning analyses.
 
 ## About
-Each folder contains:
-* source code
-* data 
+Each folder in this repository includes:
+- Source code
+- Relevant datasets
